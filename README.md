@@ -10,5 +10,5 @@
 ### Call from a python script
 ```
 from try_ansible import try_ansible
-try_ansible("ansible-playbook -f 10 playbook.yml"
+try_ansible("ansible-playbook -f 10 playbook.yml")
 ```
