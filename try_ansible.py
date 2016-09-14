@@ -5,10 +5,11 @@
 If some hosts fail in the initial playbook run, retry before giving up.
 """
 
+import argparse
 import sys
 import subprocess
 
-MAX_TRIES = 3
+MAX_TRIES_DEFAULT = 3
 
 
 def run_cmd(cmd):
@@ -31,12 +32,12 @@ def run_cmd(cmd):
     return retry_line
 
 
-def try_ansible(ansible_cmd):
+def try_ansible(ansible_cmd, max_tries=MAX_TRIES_DEFAULT):
     """Wrap ansible command in retry logic."""
     tries = 0
     retry_suffix = ''
     success = False
-    while tries < MAX_TRIES:
+    while tries < max_tries:
         tries += 1
         print "running %s (Try # %s)" % (ansible_cmd + " " + retry_suffix,
                                          tries)
@@ -52,7 +53,17 @@ def try_ansible(ansible_cmd):
     return success
 
 
+def parse():
+    """Read command line input."""
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--max_tries", default=MAX_TRIES_DEFAULT)
+    parser.add_argument("ansible_cmd", nargs=argparse.REMAINDER)
+    args = parser.parse_args()
+    return args
+
+
 if __name__ == "__main__":
-    success = try_ansible(' '.join(sys.argv[1:]))
+    args = parse()
+    success = try_ansible(' '.join(args.ansible_cmd), args.max_tries)
     if not success:
         sys.exit(1)
