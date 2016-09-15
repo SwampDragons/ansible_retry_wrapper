@@ -14,6 +14,7 @@ MAX_TRIES_DEFAULT = 3
 
 def run_cmd(cmd):
     """Run ansible command and stream stdout and stderr back to terminal."""
+    # preserve colors when streaming ansible output to terminal
     cmd_plus = ("export ANSIBLE_FORCE_COLOR=true; " +
                 "export PYTHONUNBUFFERED=1; " + cmd)
     proc = subprocess.Popen(cmd_plus,
